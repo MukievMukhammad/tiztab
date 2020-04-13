@@ -28,10 +28,9 @@ def get_links(search_text):
         inter = words_refs[pair[0]]
         for i in range(1, len(pair)):
             inter = intersection(inter, words_refs[pair[i]])
-        result_list += inter
-    result_list = list(set(result_list))
-    page_ranks = get_page_ranks(result_list)
-    return page_ranks
+        result_list += get_page_ranks(list(set(inter)))
+    result_list.reverse()
+    return result_list
 
 
 def get_page_ranks(link_ids):
@@ -41,7 +40,7 @@ def get_page_ranks(link_ids):
     for _id in link_ids:
         cursor.execute("""SELECT page_id, rank FROM pages WHERE id = {0}""".format(_id))
         result_links.append([row for row in cursor.fetchall()][0])
-    result_links = list(map(lambda x: x[0], sorted(result_links, key=lambda x: x[1], reverse=True)))
+    result_links = list(map(lambda x: x[0], sorted(result_links, key=lambda x: x[1])))
     return result_links
 
 
